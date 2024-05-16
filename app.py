@@ -7,7 +7,7 @@ import gradio as gr
 
 import csv
 import random
-# import chromadb
+import chromadb
 from chromadb.utils import embedding_functions
 from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForCausalLM
