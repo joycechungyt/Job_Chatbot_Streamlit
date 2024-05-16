@@ -9,7 +9,7 @@ import csv
 import random
 import sys
 
-print(sys.__version__)
+print(sys.version)
 
 
 import chromadb
