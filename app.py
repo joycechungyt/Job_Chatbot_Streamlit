@@ -11,9 +11,11 @@ import chromadb
 from chromadb.utils import embedding_functions
 from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForCausalLM
+from together_ai import gemmaResponse
 
-tokenizer = AutoTokenizer.from_pretrained("google/gemma-2b-it", token='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')
-model = AutoModelForCausalLM.from_pretrained("google/gemma-2b-it", device_map="auto", token='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')
+
+# tokenizer = AutoTokenizer.from_pretrained("google/gemma-2b-it", token='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')
+# model = AutoModelForCausalLM.from_pretrained("google/gemma-2b-it", device_map="auto", token='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')
 
 # Read the CSV file
 csv_path = "indeed_jobs.csv" #indeed job scrape
@@ -97,11 +99,11 @@ def chatbot_interface(query):
     context = "\n".join(user_query)
 
     input_text = f"Answer the question to the best of your ability strictly from the context.\n\nContext:{context}\n\nQuestion:{user_query}"
-    idnput_ids = tokenizer(input_text, return_tensors="pt").to("cuda")
+    # idnput_ids = tokenizer(input_text, return_tensors="pt").to("cuda")
 
-    outputs = model.generate(**input_ids, max_new_tokens=200)
-    recommendation_text = tokenizer.decode(outputs[0])
-
+    # outputs = model.generate(**input_ids, max_new_tokens=200)
+    # recommendation_text = tokenizer.decode(outputs[0])
+    recommendation_text = gemmaResponse(st.secrets['TOGETHERAI_API_KEY'], input_text)
     print("Job Recommendation:")
     print(recommendation_text)
     return recommendation_text
