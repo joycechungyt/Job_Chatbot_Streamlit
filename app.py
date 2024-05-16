@@ -7,10 +7,15 @@ import gradio as gr
 
 import csv
 import random
+import sys
+
+print(sys.__version__)
+
+
 import chromadb
 from chromadb.utils import embedding_functions
 from sentence_transformers import SentenceTransformer
-from transformers import AutoTokenizer, AutoModelForCausalLM
+# from transformers import AutoTokenizer, AutoModelForCausalLM
 from together_ai import gemmaResponse
 
 
