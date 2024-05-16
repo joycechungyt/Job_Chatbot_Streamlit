@@ -59,8 +59,8 @@ with open(linkedin_job_details_csv_path, "r") as file:
 # Combine the job information from both sources
 all_jobs = jobs + linkedin_jobs + linkedin_job_details
 
-from google.colab import drive
-drive.mount('/content/drive')
+# from google.colab import drive
+# drive.mount('/content/drive')
 
 # Initialize ChromaDB
 sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
