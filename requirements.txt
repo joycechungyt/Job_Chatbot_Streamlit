@@ -19,8 +19,9 @@ cffi==1.16.0
 chardet==5.2.0
 charset-normalizer==3.3.2
 chroma-hnswlib==0.7.3
-chromadb==0.5.0
+chromadb==0.3.29
 click==8.1.7
+clickhouse-connect==0.7.8
 cloudpathlib==0.16.0
 colorama==0.4.6
 coloredlogs==15.0.1
@@ -31,9 +32,10 @@ ctransformers==0.2.27
 cycler==0.12.1
 cymem==2.0.8
 Deprecated==1.2.14
+duckdb==0.10.2
 exceptiongroup==1.2.0
 fastai2 @ git+https://github.com/fastai/fastai2@f9231256e2a8372949123bda36e44cb0e1493aa2
-fastapi==0.109.2
+fastapi==0.85.1
 fastcore==1.5.29
 fastprogress==1.0.3
 ffmpy==0.3.2
@@ -55,6 +57,7 @@ graphviz==0.20.2
 grpcio==1.63.0
 grpcio-status==1.62.2
 h11==0.14.0
+hnswlib==0.8.0
 httpcore==1.0.3
 httptools==0.6.1
 httpx==0.26.0
@@ -73,6 +76,7 @@ kiwisolver==1.4.5
 kubernetes==29.0.0
 langcodes==3.3.0
 lxml==5.0.1
+lz4==4.3.3
 make==0.1.6.post2
 markdown-it-py==3.0.0
 MarkupSafe==2.1.4
@@ -108,11 +112,12 @@ preshed==3.0.9
 proto-plus==1.23.0
 protobuf==4.25.3
 psutil==5.9.8
+pulsar-client==3.5.0
 py-cpuinfo==9.0.0
 pyasn1==0.6.0
 pyasn1_modules==0.4.0
 pycparser==2.21
-pydantic==2.6.1
+pydantic==1.10.15
 pydantic_core==2.16.2
 pydot==2.0.0
 pydub==0.25.1
@@ -153,7 +158,7 @@ spacy==3.7.2
 spacy-legacy==3.0.12
 spacy-loggers==1.0.5
 srsly==2.4.8
-starlette==0.36.3
+starlette==0.20.4
 sympy==1.12
 tenacity==8.3.0
 thinc==8.2.3
@@ -186,3 +191,4 @@ wrapt==1.16.0
 wsproto==1.2.0
 xgboost==2.0.3
 zipp==3.18.1
+zstandard==0.22.0
