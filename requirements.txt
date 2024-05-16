@@ -35,7 +35,7 @@ Deprecated==1.2.14
 duckdb==0.10.2
 exceptiongroup==1.2.0
 fastai2 @ git+https://github.com/fastai/fastai2@f9231256e2a8372949123bda36e44cb0e1493aa2
-fastapi==0.85.1
+fastapi>=0.95.2
 fastcore==1.5.29
 fastprogress==1.0.3
 ffmpy==0.3.2
