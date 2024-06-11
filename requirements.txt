@@ -5,4 +5,5 @@ langchain-community
 langchain-core
 faiss-cpu
 transformers
+ctransformers
 sentence_transformers
