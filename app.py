@@ -27,7 +27,7 @@ embeddings = HuggingFaceEmbeddings()
 vectorstore = FAISS.from_documents(data, embeddings)
 
 # Initialize the LLM
-llm = CTransformers(model_name="google/gemma-2b-it")
+llm = CTransformers(model='google/gemma-2b-it')
 
 # Create the conversational retrieval chain
 qa = ConversationalRetrievalChain.from_llm(llm, vectorstore.as_retriever())
