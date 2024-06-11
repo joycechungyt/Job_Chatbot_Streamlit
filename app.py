@@ -1,127 +1,52 @@
-import locale
-def getpreferredencoding(do_setlocale = True):
-    return "UTF-8"
-locale.getpreferredencoding = getpreferredencoding
+import streamlit as st
+from streamlit_chat import message
+import tempfile   # temporary file
+from langchain.document_loaders.csv_loader import CSVLoader  # using CSV loaders
+from langchain.embeddings import HuggingFaceEmbeddings # import hf embedding
+from langchain.vectorstores import FAISS
+from langchain.llms import CTransformers
+from langchain.chains import ConversationalRetrievalChain
 
-import gradio as gr
+DB_FAISS_PATH = 'vectorstore/db_faiss' # Set the path of our generated embeddings
 
-import csv
-import random
-import sys
+# Read the CSV files and combine job information
+csv_path = "indeed_jobs.csv"
+linkedin_csv_path = "linkedinjobs.csv"
+linkedin_job_details_csv_path = "linkedin_job_details.csv"
 
-print(sys.version)
+loader = CSVLoader(file_path=[csv_path, linkedin_csv_path, linkedin_job_details_csv_path])
+data = loader.load()
 
+# Create embeddings
+embeddings = HuggingFaceEmbeddings()
 
-# import chromadb
-# from chromadb.utils import embedding_functions
-from sentence_transformers_local import encode_this_document
-# from transformers import AutoTokenizer, AutoModelForCausalLM
-from together_ai import gemmaResponse
+# Create a FAISS vector store
+vectorstore = FAISS.from_documents(data, embeddings)
 
+# Initialize the LLM
+llm = CTransformers(model_name="google/gemma-2b-it")
 
-# tokenizer = AutoTokenizer.from_pretrained("google/gemma-2b-it", token='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')
-# model = AutoModelForCausalLM.from_pretrained("google/gemma-2b-it", device_map="auto", token='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')
-
-# Read the CSV file
-csv_path = "indeed_jobs.csv" #indeed job scrape
-jobs = []
-with open(csv_path, "r") as file:
-    reader = csv.reader(file)
-    header = next(reader)  # Skip the header
-
-    for row in reader:
-      job = {}
-      for i in range(len(header)):
-            job[header[i]] = row[i]
-      jobs.append(job)
-        # for row in reader:
-    #     jobs.append(dict(zip(header, row)))
-
-# Read the linkedinjobs.csv file
-linkedin_csv_path = "linkedinjobs.csv" #first linkedin job scrape
-linkedin_jobs = []
-with open(linkedin_csv_path, "r") as file:
-    reader = csv.reader(file)
-    header = next(reader)  # Skip the header
-    for row in reader:
-        job = {}
-        for i in range(len(header)):
-            job[header[i]] = row[i]
-        linkedin_jobs.append(job)
-
-# Read the linkedin_job_details.csv file
-linkedin_job_details_csv_path = "linkedin_job_details.csv" #second linkedin job scrape with descriptions
-linkedin_job_details = []
-with open(linkedin_job_details_csv_path, "r") as file:
-    reader = csv.reader(file)
-    header = next(reader)  # Skip the header
-    for row in reader:
-        job = {}
-        for i in range(len(header)):
-            job[header[i]] = row[i]
-        linkedin_jobs.append(job)
-
-# Combine the job information from both sources
-all_jobs = jobs + linkedin_jobs + linkedin_job_details
-
-# from google.colab import drive
-# drive.mount('/content/drive')
-
-# Initialize ChromaDB
-sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
-    model_name="paraphrase-albert-small-v2")
-
-documents = []
-
-for job in all_jobs:
-  document = ""
-  for key, value in job.items():
-    document += f"{value} "
-  documents.append(document.strip())
-  # documents.append(f"{job['Title']} {job['Duration']} {job['Company']} {job['Location']}")
-
-ids = list(range(len(documents)))
-
-ids = [str(id) for id in ids]
-
-# client = chromadb.PersistentClient(path="./docs_cache/")
-
-
+# Create the conversational retrieval chain
+qa = ConversationalRetrievalChain.from_llm(llm, vectorstore.as_retriever())
 
 # Function to recommend a job based on user input
 def recommend_job(user_input):
-    # query_embedding = sentence_transformer_ef.encode(user_input)
-    result = collection.query(query_texts = [user_input], n_results=3)
-    # recommended_job = jobs[int(result[0].id)]
-    return result['documents'][0]
+    result = qa({"question": user_input, "chat_history": st.session_state["history"]})
+    st.session_state["history"].append((user_input, result["result"]))
+    return result["result"]
 
-# Define the Gradio interface
-def chatbot_interface(query):
-    context = "\n".join(user_query)
+# Streamlit app
+st.title("Job Recommendation Chatbot")
 
-    input_text = f"Answer the question to the best of your ability strictly from the context.\n\nContext:{context}\n\nQuestion:{user_query}"
-    # idnput_ids = tokenizer(input_text, return_tensors="pt").to("cuda")
+if "history" not in st.session_state:
+    st.session_state["history"] = []
 
-    # outputs = model.generate(**input_ids, max_new_tokens=200)
-    # recommendation_text = tokenizer.decode(outputs[0])
-    recommendation_text = gemmaResponse(st.secrets['TOGETHERAI_API_KEY'], input_text)
-    print("Job Recommendation:")
-    print(recommendation_text)
-    return recommendation_text
+user_input = st.text_input("Enter your query or type 'recommend' to get a job recommendation:")
 
-# import os
-# os.environ["GRADIO_SERVER_NAME"] = "tensorflow"  # Set a dummy server name to disable the Gradio queue
-
-# Main code
-print("Welcome to the Job Recommendation Chatbot!")
-
-while True:
-    user_input = input("Enter your query or type 'recommend' to get a job recommendation: ")
-
+if user_input:
     if user_input.lower() == "recommend":
-        inputs = gr.Textbox(label="Enter your job preferences")
-        outputs = gr.Textbox(label="Job Recommendation")
-        gr.Interface(fn=chatbot_interface, inputs=inputs, outputs=outputs, title="Job Recommendation Chatbot", theme='freddyaboulton/dracula_revamped').launch()
-
+        recommendation = recommend_job("Please recommend a job based on my preferences.")
+        st.write(recommendation)
     else:
-        query = user_input
+        response = recommend_job(user_input)
+        st.write(response)
