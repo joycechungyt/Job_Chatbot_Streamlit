@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit_chat import message
-import tempfile   # temporary file
 from langchain_community.document_loaders.csv_loader import CSVLoader  # using CSV loaders
 from langchain.embeddings import HuggingFaceEmbeddings # import hf embedding
 from langchain.vectorstores import FAISS
@@ -10,11 +9,13 @@ from langchain.chains import ConversationalRetrievalChain
 DB_FAISS_PATH = 'vectorstore/db_faiss' # Set the path of our generated embeddings
 
 # Read the CSV files and combine job information
-csv_path = "indeed_jobs.csv"
-linkedin_csv_path = "linkedinjobs.csv"
-linkedin_job_details_csv_path = "linkedin_job_details.csv"
+csv_paths = [
+    "indeed_jobs.csv",
+    "linkedinjobs.csv",
+    "linkedin_job_details.csv"
+]
 
-loader = CSVLoader(file_path=[csv_path, linkedin_csv_path, linkedin_job_details_csv_path])
+loader = CSVLoader(file_path=csv_paths)
 data = loader.load()
 
 # Create embeddings
