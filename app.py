@@ -1,12 +1,12 @@
 import streamlit as st
 from streamlit_chat import message
-from langchain_community.document_loaders.csv_loader import CSVLoader  # using CSV loaders
-from langchain.embeddings import HuggingFaceEmbeddings # import hf embedding
+from langchain_community.document_loaders.csv_loader import CSVLoader
+from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.llms import CTransformers
 from langchain.chains import ConversationalRetrievalChain
 
-DB_FAISS_PATH = 'vectorstore/db_faiss' # Set the path of our generated embeddings
+DB_FAISS_PATH = 'vectorstore/db_faiss'
 
 # Read the CSV files and combine job information
 csv_paths = [
@@ -15,8 +15,10 @@ csv_paths = [
     "linkedin_job_details.csv"
 ]
 
-loader = CSVLoader(file_path=csv_paths)
-data = loader.load()
+data = []
+for csv_path in csv_paths:
+    loader = CSVLoader(file_path=csv_path)
+    data.extend(loader.load())
 
 # Create embeddings
 embeddings = HuggingFaceEmbeddings()
@@ -46,8 +48,4 @@ user_input = st.text_input("Enter your query or type 'recommend' to get a job re
 
 if user_input:
     if user_input.lower() == "recommend":
-        recommendation = recommend_job("Please recommend a job based on my preferences.")
-        st.write(recommendation)
-    else:
-        response = recommend_job(user_input)
-        st.write(response)
+        recommendation
