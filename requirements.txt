@@ -1,2 +1,5 @@
-sentence-transformers
-gradio
+streamlit
+streamlit-chat
+langchain
+faiss-cpu
+transformers
