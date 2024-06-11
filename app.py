@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_chat import message
 import tempfile   # temporary file
-from langchain.document_loaders.csv_loader import CSVLoader  # using CSV loaders
+from langchain_community.document_loaders.csv_loader import CSVLoader  # using CSV loaders
 from langchain.embeddings import HuggingFaceEmbeddings # import hf embedding
 from langchain.vectorstores import FAISS
 from langchain.llms import CTransformers
