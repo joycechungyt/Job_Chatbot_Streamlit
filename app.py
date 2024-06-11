@@ -12,9 +12,9 @@ import sys
 print(sys.version)
 
 
-import chromadb
-from chromadb.utils import embedding_functions
-from sentence_transformers import SentenceTransformer
+# import chromadb
+# from chromadb.utils import embedding_functions
+from sentence_transformers_local import encode_this_document
 # from transformers import AutoTokenizer, AutoModelForCausalLM
 from together_ai import gemmaResponse
 
@@ -84,13 +84,9 @@ ids = list(range(len(documents)))
 
 ids = [str(id) for id in ids]
 
-client = chromadb.PersistentClient(path="./docs_cache/")
+# client = chromadb.PersistentClient(path="./docs_cache/")
 
-collection = client.get_or_create_collection(name="job_collection", embedding_function=sentence_transformer_ef)
 
-collection.add(documents=documents, ids=ids)
-
-collection.count()
 
 # Function to recommend a job based on user input
 def recommend_job(user_input):
